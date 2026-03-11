@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<div class="log-reg">
+    <h1>Create a Class</h1>
+    <p>Are you a teacher looking to create a virtual classroom for your students? <br> <br> <b>Create a class here!</b></p>
+
+    <div class="reg-int">
+        <div class="left-reg">
+            <label for="username">Username:</label>
+            <label for="password">Password:</label>
+            <label for="password_con">Confirm Password:</label>
+            <label for="password">Class Name:</label>
+        </div>
+        <div class="right-reg">
+            <form action="/create_class" method="post" id="create">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input name="username" type="text" required><br>
+                <input name="password" type="password" required
+                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                        title="Must contain at least one number, one uppercase, and one lowercase letter. At least 8 characters"><br>
+                <input name="password_con" type="password" required><br>
+                <input name="classname" type="text" required><br>
+            </form>
+        </div>
+    </div>
+    <button type="submit" form="create">Register</button>
+    <p>Already have an account? <a href="/login">Login Here</a>.</p>
+    <p>Student joining a class? <a href="/register_student">Join Here</a>.</p>
+</div>
+
+
+<div class="corner-popup" id="popup">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let alerts = document.querySelectorAll('.flash');
+    let popup = document.getElementById('popup');
+
+    if (alerts.length > 0) {
+        popup.style.display = "block";  
+
+        setTimeout(function() {
+            popup.style.display = "none";
+        }, 3000);
+    }
+});
+</script>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

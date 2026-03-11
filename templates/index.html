@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="actions-container">
+    <form action="{{ url_for('login') }}" method="get" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<div class="welcome">
+    <img class="flower-img" src="{{ url_for('static', filename='flowers.jpg') }}" alt="Green Flowers" loading="lazy">
+    <div class="overlay">
+        <h3 style="color:olivedrab; font-size:2em;">Welcome!</h3>
+        <p>Tutti is a online web app that lets students join classes, complete tasks and practice sessions, and lets teachers manage and track student progress.</p>
+        <div class="front-page-cols">
+            <div class="left-col">
+                <p>If you're a <b>teacher</b> looking to create a space for your students to excel their learning...</p>
+                <form action="{{ url_for('create_class') }}" method="get" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit">Register Here!</button>
+                </form>
+            </div>
+            <div class="right-col">
+                <p>If you're a <b>student</b> ready to join a class made by your teacher...</p>
+                <form action="{{ url_for('register_student') }}" method="get" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit">Join Here!</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="sml-actions-container">
+        <h3 style="color:olivedrab; font-size:2em;">Welcome!</h3>
+        <p>Already have an account?</p>
+        <form action="{{ url_for('login') }}" method="get" style="display: inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Login</button>
+        </form>
+        <p>If you're a <b>teacher</b>...</p>
+        <form action="{{ url_for('create_class') }}" method="get" style="display: inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Create a class</button>
+        </form>
+        <p>If you're a <b>student</b>...</p>
+        <form action="{{ url_for('register_student') }}" method="get" style="display: inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Join a class</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

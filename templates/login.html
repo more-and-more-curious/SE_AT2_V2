@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<div class="log-reg">
+    <h1>Login</h1>
+    
+    <div class="reg-int">
+        <div class="left-reg">
+            <label for="username">Username:</label>
+            <label for="password">Password:</label>
+        </div>
+
+        <div class="right-reg">
+            <form action="/login" method="post" id="login">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input name="username" type="text" required><br>
+                <input name="password" type="password" required><br>
+            </form>
+        </div>
+    </div>
+
+    <button type="submit" form="login">Login</button>
+    <p>Student joining a class? <a href="/register_student">Join Here</a>.</p>
+    <p>Teacher looking to create a class? <a href="/create_class">Register Here</a>.</p>
+</div>
+
+
+<div class="corner-popup" id="popup">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let alerts = document.querySelectorAll('.flash');
+    let popup = document.getElementById('popup');
+
+    if (alerts.length > 0) {
+        popup.style.display = "block";  
+
+        setTimeout(function() {
+            popup.style.display = "none";
+        }, 3000);
+    }
+});
+</script>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

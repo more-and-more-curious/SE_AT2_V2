@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<h3 class="unauthorised">Houston, we've got a problem</h3>
+<p class="unauthorise">{{ message }}</p>
+<p class="unauthorised"><a href='{{ url_for("login") }}'>Return to Login</a></p>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

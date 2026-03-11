@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<div class="actions-container">
+    <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="sml-logout">
+    <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" aria-label="Logout"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                            </svg></button>
+    </form>
+</div>
+
+<div class="student_main_view">
+    <div class="tasks">
+        <h1>Welcome Back {{username}}</h1>
+        <table class="tasks-table">
+            <tr>
+                <th id="task_name">Your Tasks</th>
+                <th id="due_date">Due</th>
+                <th id="button"></th>
+            </tr>
+            <tbody>
+                {% if tasks is string %}
+                    <tr>
+                        <td colspan="8" id="task-txt">
+                            {{ tasks }}
+                        </td>
+                    </tr>
+
+                {% else %}
+                    {% for row in tasks %}
+                    <tr>
+                        <td>
+                            <h4>{{ row[1] }}</h4>
+                            <p>{{ row[2] }}</p>
+                        </td>
+                        <td>{{ row[3] }}</td>
+                        <td><button class="open-popup" onclick="openPopup({{ row[0] }})">+</button></td>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="calendar">
+        <div class="calendar-nav">
+            <h3><a href="{{ url_for('student_main', year=prev_year, month_num=prev_month) }}">&#9204;    </a>{{ month }} {{ year }}<a href="{{ url_for('student_main', year=next_year, month_num=next_month) }}">    &#9205;</a></h3>
+        </div>
+        <table>
+            <tr>
+                <th>Mo</th>
+                <th>Tu</th>
+                <th>We</th>
+                <th>Th</th>
+                <th>Fr</th>
+                <th>Sa</th>
+                <th>Su</th>
+            </tr>
+            {% for week in current_month %}
+            <tr>
+                {% for day in week %}
+                    {% if day == 0 %}
+                        <td></td>
+                    {% elif day == curr_day %}
+                        <td style="background-color: olivedrab; color: white;">{{ day }}</td>
+                    {% elif day in futtasks %}
+                        <td style="background-color: rgb(216, 231, 188);">{{ day }}</td>
+                    {% elif day in pasttasks %}
+                        <td style="background-color: rgb(254, 225, 225);">{{ day }}</td>
+                    {% else %}
+                        <td>{{ day }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        <td><button class="open-popup" onclick="openPopup(null)">Start New Session</button></td>
+    </div>
+</div>
+
+<div class="popup-parent" id="popup">
+    <form class="stopwatch-contents" method="POST" action="/end_session">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h2>New Session</h2>
+        <div class="stopwatch-display">
+            <div id="time-display">0.00</div>
+            <input type="hidden" name="time" id="time" required>
+            <input type="hidden" name="task_id" id="task_id">
+
+            <button id="startStopBtn"
+                    class="icons start"
+                    type="button"
+                    onclick="toggleTimer()">
+                    &#9205;
+                </button><br>
+        </div>
+
+        <button class="stopwatch-submit" type="submit" id="submitBtn" disabled>End Session</button>
+    </form>
+</div>
+
+<script>
+let startTime = 0;
+let elapsedTime = 0;
+let timer = null;
+const submitBtn = document.getElementById("submitBtn");
+
+function toggleTimer() {
+    if (timer === null) {
+        start();
+    } else {
+        stop();
+    }
+}
+
+function start() {
+    startTime = Date.now() - elapsedTime;
+    timer = setInterval(updateTime, 10);
+
+    const btn = document.getElementById("startStopBtn");
+    btn.innerHTML = "&#9208;"; 
+    btn.classList.remove("start");
+    btn.classList.add("stop");
+}
+
+function stop() {
+    clearInterval(timer);
+    timer = null;
+    elapsedTime = Date.now() - startTime;
+
+    const btn = document.getElementById("startStopBtn");
+    btn.innerHTML = "&#9205;"; // play icon
+    btn.classList.remove("stop");
+    btn.classList.add("start");
+}
+
+function reset() {
+    clearInterval(timer);
+    timer = null;
+    startTime = 0;
+    elapsedTime = 0;
+
+    document.getElementById("time-display").textContent = "0.00";
+
+    const btn = document.getElementById("startStopBtn");
+    btn.innerHTML = "&#9205;";
+    btn.classList.remove("stop");
+    btn.classList.add("start");
+}
+
+function updateTime() {
+    elapsedTime = Date.now() - startTime;
+
+    const totalSeconds = Math.floor(elapsedTime / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+
+    const display = mins + "." + secs.toString().padStart(2, "0");
+
+    document.getElementById("time-display").textContent = display;
+    document.getElementById("time").value = display;
+
+    if (parseFloat(elapsedTime) > 0) {
+        submitBtn.disabled = false;
+    } else {
+        submitBtn.disabled = true;
+    }
+}
+
+function openPopup(task_id) {
+    document.getElementById("popup").style.display = "block";
+
+    const taskInput = document.getElementById("task_id");
+
+    if (task_id === null) {
+        taskInput.value = "";
+    } else {
+        taskInput.value = task_id;
+    }
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+    clearInterval(timer);
+    timer = null;
+    startTime = 0;
+    elapsedTime = 0;
+    document.getElementById("time-display").textContent = "0.00";
+}
+
+</script>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

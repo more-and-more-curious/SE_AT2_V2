@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<div class="actions-container">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="sml-logout">
+    <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" aria-label="Logout"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                            </svg></button>
+    </form>
+</div>
+
+<div class="teacher_nav"> <!-- No nav tab is selected here as it is a subpage of the mainpage, but user can still access the other pages from it -->
+    <h3 class="other_tab"><a href="{{ url_for('teacher_tasks') }}">Tasks</a></h3>
+    <h3 class="other_tab"><a href="{{ url_for('teacher_main') }}">Students</a></h3>
+    <h3 class="other_tab"><a href="{{ url_for('teacher_stats') }}">Statistics</a></h3>
+</div>
+
+<div class="student_view"> <!-- Exact same card as mainpage, but just one student -->
+    <div class="card">
+        <div class="student-info">
+            <img class="student-img"
+                src="{{ url_for('static', filename='no_image.png') }}"
+                loading="lazy"
+                alt="No image available">
+
+            <h3>{{ student[1] }}</h3>
+            <p class="student_comp"> 
+                Total sessions: <a style="background-color: lightblue;">{{ student[2] }}</a> <br>
+                Overdue tasks: <a style="background-color: rgb(254, 225, 225);">{{ student[3] }}</a> <br>
+                Future tasks: <a style="background-color: rgb(216, 231, 188)">{{ student[4] }}</a> <br>
+            </p>
+            {% if role =='admin' %} <!-- Change from mainpage, ability to set or revoke admin status -->
+                <form method="POST" action="{{ url_for('revoke_admin') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="student_id" value="{{ student[0] }}">
+                    <button type="submit" class="revoke_admin">Revoke Admin</button>
+                </form>
+            {% else %}
+                <form method="POST" action="{{ url_for('make_admin') }}"> 
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="student_id" value="{{ student[0] }}">
+                    <button type="submit" class="make_admin">Make Admin</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="student_completion">
+        <table class="idv_tasks_table">
+            <tr>
+                <th id="task_name">Student's Tasks</th>
+                <th id="due_date">Due</th>
+                <th id="comp">Completed?</th>
+                <th id="fin">Mark as Complete</th>
+                <th id="fin">Delete</th>
+            </tr>
+            <tbody>
+                {% if tasks is string %} <!-- If server-side sends through a string, it's rendered here instead of the table -->
+                    <tr>
+                        <td colspan="8" id="task-txt">
+                            {{ tasks }}
+                        </td>
+                    </tr>
+
+                {% else %}
+                    {% for row in tasks %}
+                    <tr>
+                        <td>
+                            <h4>{{ row[1] }}</h4>
+                            <p>{{ row[2] }}</p>
+                        </td>
+                        <td>{{ row[3] }}</td>
+
+                        {% if row[5] == 1 %} <!-- Some small formatting (red cross for incomplete, green tick for complete) -->
+                            <td style="color: olivedrab">&#10004;</td>
+                        {% else %}
+                            <td style="color: #e74c3c">&#10008;</td>
+                        {% endif %}
+
+                        <td>
+                            <form class="mark_comp" method="POST" action="/mark_complete">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- All these hidden inputs pass through the right data back to the server routes -->
+                                <input type="hidden" name="student_id" value="{{ student[0] }}">
+                                <input type="hidden" name="time" value="0">
+                                <input type="hidden" name="task_id" value="{{ row[0] }}">
+                                <button id="check" type="submit">&#9744;</button>
+                            </form>
+                        </td>
+
+                        <td class="center_col">
+                            <form action="{{ url_for('delete_idv') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="student_id" value="{{ student[0] }}">
+                                <input type="hidden" name="delete" value="{{ row[0] }}">
+                                <button class="task_btn" type="submit">&#128465;</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="popup-button"><button class="open-popup" onclick="openPopup()">+</button></div> 
+    </div>
+</div>
+
+<div id="popup" class="popup-parent"> <!-- Same popup as the teacher tasks page, just passes through the specific student ID as well -->
+    <form class="task-contents" method="POST" action="/create_idv_task">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Create Task</h3>
+        <label>Name</label>
+        <input type="text" name="name" required><br>
+
+        <label>Description</label>
+        <input type="text" name="desc" required><br>
+
+        <label>Due Date</label>
+        <input type="date" id="start" name="due-date" min="2024-01-01" required><br>
+
+        <input type="hidden" name="student_id" value="{{ student[0] }}">
+
+        <button type="submit">Assign to student</button>
+    </form>
+</div>
+
+<script> // Simple script, open and close the popup
+    function openPopup(student_id) {
+    document.getElementById("popup").style.display = "block";
+}
+
+    function closePopup() {
+    document.getElementById("popup").style.display = "none";
+    }
+</script>
+</div>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

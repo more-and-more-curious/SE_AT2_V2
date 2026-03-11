@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<div class="actions-container">
+    <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="sml-logout">
+    <form action="{{ url_for('logout') }}" method="get" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" aria-label="Logout"><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                            </svg></button>
+    </form>
+</div>
+
+<div class="teacher_main_view">
+    <div class="teacher_nav">
+        <h3 class="other_tab"><a href="{{ url_for('teacher_tasks') }}">Tasks</a></h3>
+        <h3 class="current_tab">Students</h3>
+        <h3 class="other_tab"><a href="{{ url_for('teacher_stats') }}">Statistics</a></h3>
+    </div>
+    <p style="text-align: center;">Tap the student icon to open the student’s profile.</p>
+    <div class="students_grid">
+    {% for student in students %}
+
+        {% if student[0] == edit_index %}
+
+        <div class="card">
+            <div class="student-info">
+                <form action="{{ url_for('save_student') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <img class="student-img" src="{{ url_for('static', filename='no_image.png') }}" alt="No image available" loading="lazy">
+                    
+                    <input type="text" name="name" value="{{ student[1] }}">
+                    <input type="hidden" name="edit_index" value="{{ student[0] }}">
+                    
+                    <p class="student_comp">
+                        Total sessions: <a style="background-color: lightblue;">{{ student[2] }}</a> <br>
+                        Overdue tasks: <a style="background-color: rgb(254, 225, 225);">{{ student[3] }}</a> <br>
+                        Future tasks: <a style="background-color: rgb(216, 231, 188)">{{ student[4] }}</a> <br>
+                    </p>
+
+                    <button type="submit" class="task_btn">&#128190;</button>
+                </form>
+                <form action="{{ url_for('delete_student') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="delete" value="{{ student[0] }}">
+                    <button class="task_btn">&#128465;</button>
+                </form>
+            </div>
+        </div>
+
+        {% else %}
+
+        <div class="card">
+            <div class="student-info">
+                <form action="{{ url_for('teacher_student') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="student_id" value="{{ student[0] }}">
+                        <button type="submit" style="border:none; background:none; padding:0;">
+                            <img class="student-img"
+                                src="{{ url_for('static', filename='no_image.png') }}"
+                                loading="lazy"
+                                alt="No image available">
+                        </button>
+                    </form>
+
+                {% if student[5] == "admin" %}
+                    <h3>{{ student[1] }} <span style="color:goldenrod">&#9733;</span></h3>
+                {% else %}
+                    <h3>{{ student[1] }}</h3>
+                {% endif %}
+                <p class="student_comp">
+                    Total sessions: <a style="background-color: lightblue;">{{ student[2] }}</a> <br>
+                    Overdue tasks: <a style="background-color: rgb(254, 225, 225);">{{ student[3] }}</a> <br>
+                    Future tasks: <a style="background-color: rgb(216, 231, 188)">{{ student[4] }}</a> <br>
+                </p>
+                <div class="student-actions">
+                    <form action="{{ url_for('edit_student') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="edit" value="{{ student[0] }}">
+                        <button class="task_btn">&#9998;</button>
+                    </form>
+
+                    <form action="{{ url_for('delete_student') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="delete" value="{{ student[0] }}">
+                        <button class="task_btn">&#128465;</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+
+    {% endfor %}
+        <div class="card">
+            <form method="POST" action="/create_invite">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="open-popup" type="button" onclick="createInvite()">+</button>
+                <h3>Add Student</h3>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="popup" class="popup-parent">
+    <div class="flash-contents">
+        <span class="close" onclick="closePopup()">&times;</span>
+        <h3>Invite Code</h3>
+        <div id="flash-message" class="flash"></div>
+        <hr>
+        <p>Give this to your student to join your class.</p>
+        <p><span class="warn">Remember!</span></p>
+        <p>It can only be used once</p>
+    </div>
+</div>
+
+<script>
+function createInvite() {
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+    fetch('/create_invite', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const popup = document.getElementById("popup");
+        const message = document.getElementById("flash-message");
+
+        message.textContent = `${data.code}`;
+        message.className = "flash success";
+
+        popup.style.display = "block";
+    })
+    .catch(err => console.error(err));
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+</script>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

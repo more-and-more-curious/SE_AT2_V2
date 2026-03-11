@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="initial-scale=1", width="device-width">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <title>Tutti</title>
+    </head>
+    <body>
+        <div class="wrapper">
+            <header>
+                <h1>Tutti</h1>
+            </header>
+            <main>
+                {% block body %}
+                {% endblock %}
+            </main>
+            <footer>
+                <p>We pay respect to the Traditional Custodians and First Peoples of NSW, and acknowledge their continued connection to their country and culture.</p>
+            </footer>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,155 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="header-whitespace"></div>
+
+<div class="actions-container">
+    <form action="{{ url_for('logout') }}" method="POST" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<div class="sml-logout">
+    <form action="{{ url_for('logout') }}" method="POST" style="display: inline;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" aria-label="Logout">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+            </svg>
+        </button>
+    </form>
+</div>
+
+<div class="teacher_nav">
+    <h3 class="current_tab">Tasks</h3>
+    <h3 class="other_tab"><a href="{{ url_for('teacher_main') }}">Students</a></h3>
+    <h3 class="other_tab"><a href="{{ url_for('teacher_stats') }}">Statistics</a></h3>
+</div>
+
+<div class="tasks_table">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Task</th>
+                <th>Description</th>
+                <th>Due</th>
+                <th>Completed</th>
+                <th>Incompleted</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% if tasks is string %}
+            <tr>
+                <td colspan="8" id="task-txt">
+                    {{ tasks }}
+                </td>
+            </tr>
+
+        {% else %}
+            {% for task in tasks %}
+
+            {% if task[0] == edit_index %}
+            <tr>
+                <td>{{ task[0] }}</td>
+
+                <form action="{{ url_for('save_item') }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <td>
+                        <input type="text" name="name" value="{{ task[1] }}">
+                        <input type="hidden" name="edit_index" value="{{ task[0] }}">
+                    </td>
+                    <td>
+                        <input type="text" name="desc" value="{{ task[2] }}">
+                    </td>
+                    <td class="center_col">
+                        <input type="date" name="new_due" value="{{ task[3] }}">
+                    </td>
+                    <td class="center_col">{{ task[5] }}</td>
+                    <td class="center_col">{{ task[6] }}</td>
+                    <td class="center_col">
+                        <button type="submit" class="task_btn">&#128190;</button>
+                    </td>
+                </form>
+
+                <td class="center_col">
+                    <form action="{{ url_for('delete_item') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="delete" value="{{ task[0] }}">
+                        <button class="task_btn">&#128465;</button>
+                    </form>
+                </td>
+            </tr>
+
+            {% else %}
+            <tr>
+                <td>{{ task[0] }}</td>
+                <td>{{ task[1] }}</td>
+                <td>{{ task[2] }}</td>
+                <td class="center_col">{{ task[3] }}</td>
+                <td class="center_col">{{ task[5] }}</td>
+                <td class="center_col">{{ task[6] }}</td>
+
+                <td class="center_col">
+                    <form action="{{ url_for('edit_item') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="edit" value="{{ task[0] }}">
+                        <button class="task_btn">&#9998;</button>
+                    </form>
+                </td>
+
+                <td class="center_col">
+                    <form action="{{ url_for('delete_item') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="delete" value="{{ task[0] }}">
+                        <button class="task_btn">&#128465;</button>
+                    </form>
+                </td>
+            </tr>
+            {% endif %}
+
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+
+    <div id="create-popup" class="popup-parent">
+        <form class="task-contents" method="POST" action="{{ url_for('create_task') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h3>Create Task</h3>
+            <label>Name</label>
+            <input type="text" name="name" required><br>
+
+            <label>Description</label>
+            <input type="text" name="desc" required><br>
+
+            <label>Due Date</label>
+            <input type="date" id="start" name="due-date" min="2024-01-01" required><br>
+
+            <button type="submit">Assign to class</button>
+        </form>
+    </div>
+
+    <script>
+    function openPopup() {
+        document.getElementById("create-popup").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("create-popup").style.display = "none";
+    }
+    </script>
+</div>
+
+<div class="popup-button"><button class="open-popup" onclick="openPopup()">+</button></div>
+
+<div class="header-whitespace"></div>
+
+{% endblock %}

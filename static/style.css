@@ -1,0 +1,774 @@
+/* ---------------- FONTS ---------------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:wght@300..800&display=swap');
+
+* {
+    font-family: 'Comfortaa', sans-serif;
+    box-sizing: border-box;
+}
+
+/* ---------------- HEADER ---------------- */
+
+header, footer {
+    text-align: center;
+    background: darkolivegreen;
+    color: white;
+    font-weight: bold;
+    padding: 20px;
+    position: relative;
+}
+
+.header-whitespace {
+    padding: 20px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Wrapper as flex container */
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content grows to fill space */
+main {
+    flex: 1;
+}
+
+.welcome {
+    position: relative;
+    width: 100%;
+    height: 650px;      /* fixed height so cropping can occur */
+    overflow: hidden;   /* hides cropped parts */
+}
+
+.flower-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* crop instead of shrink */
+    display: block;
+}
+
+.overlay {
+    position: absolute; /* position relative to .image-container */
+    top: 15%;
+    left: 25%;
+    width: 50%;
+
+    text-align: center;
+
+    background-color: white;
+    border-radius: 50px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.front-page-cols {
+    display: flex;
+    position: relative;
+}
+
+.front-page-cols::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    height: 80%;
+    width: 2px;
+    background: olivedrab;
+}
+
+.front-page-cols {
+    display: flex;
+}
+
+.left-col,
+.right-col {
+    flex: 1;
+    display: flex;
+    padding: 2rem;
+    flex-direction: column;
+    justify-content: center; /* vertical alignment */
+    align-items: center;     /* horizontal alignment */
+    text-align: center;
+}
+
+.actions-container {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 1.2em;
+}
+
+.sml-actions-container {
+    position: absolute; /* position relative to .image-container */
+    top: 15%;
+    left: 25%;
+    width: 50%;
+    text-align: center;
+    padding-bottom: 20px;
+
+    background-color: white;
+    border-radius: 50px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 20px;;
+}
+
+.actions-container button,
+.actions-container select {
+    font-size: 1.2em;
+    color: white;
+    background-color: transparent;
+    border: transparent;
+    box-shadow: none;
+    padding-left: 20px;
+}
+
+/* ---------------- STUDENT DASHBOARD ---------------- */
+
+.student_main_view {
+    width: 95%;
+    display: flex;
+    gap: 5rem;
+    justify-content: center;
+}
+
+/* Calendar */
+
+.calendar {
+    width: 30%;
+    text-align: center;
+}
+
+.calendar-nav a {
+    text-decoration: none;
+}
+
+.calendar table {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 10px;
+    border-collapse: separate;
+    border-spacing: 10px;
+    table-layout: fixed;
+}
+
+.calendar th,
+.calendar td {
+    text-align: center;
+    padding: 15px 5px;
+    border-radius: 30px;
+}
+
+/* Tasks */
+
+.tasks {
+    width: 50%;
+}
+
+.tasks table {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 12px;
+    border-spacing: 0;
+    text-align: left;
+    padding: 15px 30px;
+}
+
+.tasks th {
+    font-size: 1.2em;
+}
+
+.tasks td {
+    border-bottom: 1px solid black;
+}
+
+.tasks tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---------------- BUTTONS ---------------- */
+
+button,
+.tasks button,
+.open-popup,
+.stopwatch-submit,
+.sml-actions-container button,
+.make_admin {
+    background: olivedrab;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+}
+
+.revoke_admin {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+}
+
+.popup-button {
+    display: flex;
+    justify-content: center;
+}
+
+.open-popup {
+    font-size: 2em;
+    padding: 8px 16px;
+    border-radius: 30px;
+}
+
+#check, .task_btn {
+    background: transparent;
+    border: none;
+    font-weight: bold;
+    font-size: 1.5em;
+    color: black;
+}
+
+.icons {
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+}
+/* ---------------- LOGIN / REGISTER ---------------- */
+
+.reg-int {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    display: flex;
+    gap: 5px;
+}
+
+.left-reg {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    width: 120px; /* fixed label column */
+}
+
+.right-reg {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.right-reg input {
+    width: 100%;
+}
+
+.log-reg {
+    width: 90%;
+    max-width: 450px;
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 20px;
+    text-align: center;
+    padding: 20px;
+}
+
+.log-reg h1 {
+    color: green;
+}
+
+.log-reg label,
+.log-reg button {
+    margin: 10px;
+}
+
+.log-reg input {
+    margin: 11px;
+    width: 100%;
+}
+
+/* ---------------- TEACHER VIEW ---------------- */
+
+.teacher_view_main {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    text-align: center;
+}
+
+.teacher_nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.teacher_nav a {
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.current_tab {
+    padding: 10px;
+    background: olivedrab;
+    color: white;
+}
+
+.other_tab {
+    padding: 10px;
+    background: rgb(228, 235, 214);
+    color: white;
+}
+/* Student Grid */
+
+.students_grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* Cards */
+
+.card {
+    border: 1px solid black;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card form,
+.student-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 5px;
+}
+
+.card h3 {
+    margin: 0.5rem 0 1rem;
+}
+
+.student-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.student-img {
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.student_comp {
+    display: block;
+    margin-top: 20px;
+    line-height: 2.2;
+}
+
+/* stat groups */
+
+.student_comp div {
+    text-align: center;
+}
+
+/* highlight numbers */
+
+.student_comp a {
+    display: inline-block;
+    padding: 0px 12px;
+    margin: 2px;
+    border-radius: 18px;
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+/* ---------------- POPUPS ---------------- */
+
+.popup-parent {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+.popup-parent form,
+.stopwatch-contents,
+.flash-contents {
+    background: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 300px;
+    border-radius: 8px;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* ---------------- STOPWATCH ---------------- */
+
+.stopwatch-contents {
+    text-align: center;
+}
+
+.stopwatch-display {
+    padding: 30px;
+    margin-bottom: 20px;
+    background: rgb(219, 231, 196);
+}
+
+.stopwatch-display button {
+    font-size: 2em;
+}
+
+#time-display {
+    font-size: 3em;
+    font-family: 'Google Sans Code';
+    padding: 10px;
+}
+
+/* ---------------- TASK TABLE ---------------- */
+
+.tasks_table {
+    padding: 20px 50px;
+    overflow-x: auto;
+}
+
+.tasks_table table {
+    width: 100%;
+    table-layout: auto;
+}
+
+.tasks_table th:nth-child(3),
+.tasks_table td:nth-child(3) {
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.tasks_table input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.center_col {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.tasks_table td,
+.tasks_table th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-height: 50px;
+    vertical-align: middle;
+}
+
+/* ---------------- FLASH MESSAGES ---------------- */
+
+.flash {
+    padding: 10px;
+    margin: 15px auto;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    background-color: olivedrab;
+    width: fit-content;
+}
+
+.flash.error {
+    background-color: #e74c3c;
+}
+
+.warn {
+    padding: 5px;
+    color: crimson;
+    font-weight: bold;
+    background: rgb(254, 225, 225);
+}
+
+/* ---------------- STUDENT VIEW ---------------- */
+
+.student_view {
+    display: flex;
+    align-items: flex-start;
+    gap: 50px;
+    margin: 40px;
+}
+
+/* student card stays fixed size */
+
+.student_view .card {
+    flex: 0 0 320px;
+    padding: 20px;
+}
+
+/* table area expands */
+
+.student_completion {
+    flex: 1;
+}
+
+/* table fills available space */
+
+.student_completion table {
+    width: 100%;
+}
+
+.idv_tasks_table {
+    width: 100%;
+    border-collapse: separate;
+}
+
+/* Align headers */
+.idv_tasks_table th#task_name {
+    text-align: left;
+    padding-left: 12px;
+}
+
+.idv_tasks_table th#due_date,
+.idv_tasks_table th#comp 
+.idv_tasks_table th#fin {
+    text-align: center;
+}
+
+/* Align table cells */
+.idv_tasks_table td:nth-child(1) {
+    text-align: left;
+    padding-left: 12px;
+}
+
+.idv_tasks_table td:nth-child(2),
+.idv_tasks_table td:nth-child(3),
+.idv_tasks_table td:nth-child(4) {
+    text-align: center;
+}
+
+.idv_tasks_table td:nth-child(3),
+.idv_tasks_table td:nth-child(4) {
+    font-size: 200%;
+}
+
+/* ---------------- MISC ---------------- */
+
+hr {
+    margin: 20px 0 15px;
+}
+
+.corner-popup {
+    width: 20%;
+    margin: 15px auto;
+}
+
+#popup {
+    display: none;
+}
+
+.unauthorised {
+    text-align: center;
+    font-weight: bold;
+}
+
+#task-txt {
+    text-align: center;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+#prac_mins,
+#idv_divis {
+    border: 1px solid black;
+    border-radius: 30px;
+    padding: 10px;
+    margin: 20px;
+    width: 50%;
+}
+
+.graphs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4%;
+    justify-content: center;
+}
+
+.graphs > div {
+    flex: 0 1 40%; 
+    height: 400px;
+}
+
+.task-contents input, button {
+    margin: 10px;
+}
+
+.task-contents h3 {
+    color: white;
+    background-color: olivedrab;
+    padding: 5px;
+    border-radius: 5px;
+    width: 85%;
+}
+
+.task-contents label {
+    width: 120px;         /* fixed width so inputs align */
+    text-align: right;
+    margin-right: 15px;   /* space between label and input */
+    font-weight: 600;
+}
+
+.task-contents input {
+    flex: 1;              /* inputs take remaining space */
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.sml-actions-container {
+    display: none;
+}
+.sml-logout {
+    display: none;
+}
+
+@media (min-width: 600px) and (max-width: 1024px) {
+    .actions-container {
+        display: none;
+    }
+
+    .sml-actions-container {
+        display: block;
+    }
+    .sml-actions-container h3 {
+        margin: 10px;
+    }
+    .sml-logout {
+        display: inline;
+        position: absolute;
+        top: 30px;
+        right: 30px;
+    }
+    .sml-logout button {
+        font-weight: bolder;
+        color: white;
+        background-color: transparent;
+        border: transparent;
+        box-shadow: none;
+        padding-left: 20px;
+    }
+    .tasks_table :is(th, td):nth-child(3),
+    .tasks_table :is(th, td):nth-child(4) {
+        display: none;
+    }
+
+    .graphs > div {
+        flex: 1 1 100%;
+    }
+
+    .student_main_view {
+        margin: 20px;
+        flex-direction: column;
+    }
+    .calendar {
+        width: 100%;
+    }
+    .tasks {
+        width: 100%;
+    }
+    .overlay {
+        display: none;
+    }
+    .student_view {
+        flex-direction: column;  /* vertical layout */
+        gap: 20px;               /* smaller gap for mobile */
+        margin: 20px;            /* adjust margins */
+    }
+
+    .student_view .card,
+    .student_completion {
+        flex: unset;             /* allow natural height */
+        width: 100%;             /* fill container width */
+    }
+}
+
+@media (max-width: 599px) {
+    .actions-container {
+        display: none;
+    }
+
+    .sml-actions-container {
+        display: block;
+        left:15%;
+        margin: 20px;
+        width: 60%;
+    }
+    .sml-actions-container h3 {
+        margin: 10px;
+    }
+    .sml-logout {
+        display: inline;
+        position: absolute;
+        top: 30px;
+        right: 30px;
+    }
+    .sml-logout button {
+        color: white;
+        background-color: transparent;
+        border: transparent;
+        box-shadow: none;
+        padding-left: 20px;
+    }
+
+    .tasks_table :is(th, td):nth-child(3),
+    .tasks_table :is(th, td):nth-child(4),
+    .tasks_table :is(th, td):nth-child(7),
+    .tasks_table :is(th, td):nth-child(8) {
+        display: none;
+    }
+
+    .tasks_table th,
+    .tasks_table td {
+        padding: 13px 5px;
+    }
+    .graphs > div {
+        flex: 1 1 100%;
+    }
+    
+    .student_main_view {
+        margin: 20px;
+        flex-direction: column;
+    }
+    .calendar {
+        width: 100%;
+    }
+    .tasks {
+        width: 100%;
+    }
+    .corner-popup {
+        width: 80%;
+    }
+    .overlay {
+        display: none;
+    }
+    .student_view {
+        flex-direction: column;  /* vertical layout */
+        gap: 20px;               /* smaller gap for mobile */
+        margin: 20px;            /* adjust margins */
+    }
+
+    .student_view .card,
+    .student_completion {
+        flex: unset;             /* allow natural height */
+        width: 100%;             /* fill container width */
+    }
+}
