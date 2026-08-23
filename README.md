@@ -26,13 +26,12 @@ python3 app.py
 
 ## Help
 
-Due to limiter and timeout, logged in sessions expire after 15 minutes and the limit for all routes is 20 connections per minute and 5 specifically for the login route. You will be redirected to an error page if this occurs, and will have to wait out the limiter. 
+Due to limiter and timeout, logged in sessions expire after 15 minutes and the limit for all routes is 20 connections per minute and 5 specifically for the login route. You will be redirected to an error page if this occurs and will have to wait out the limiter. 
 
 ## Authors
 
-Heidi
+more-and-more-curious
 
 ## Version History
 
-* 0.1
-    * Initial Release
+Just the one.
