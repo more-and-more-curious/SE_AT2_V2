@@ -31,7 +31,3 @@ Due to limiter and timeout, logged in sessions expire after 15 minutes and the l
 ## Authors
 
 more-and-more-curious
-
-## Version History
-
-Just the one.
