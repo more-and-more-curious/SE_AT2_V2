@@ -21,14 +21,14 @@
     </form>
 </div>
 
-<div class="teacher_nav">
+<div class="teacher_nav"> <!-- Navigation Bar (selected tab differs between pages) -->
     <h3 class="other_tab"><a href="{{ url_for('teacher_tasks') }}">Tasks</a></h3>
     <h3 class="other_tab"><a href="{{ url_for('teacher_main') }}">Students</a></h3>
     <h3 class="current_tab">Statistics</h3>
 </div>
 
 {% if tasks is string and sessions is string %}
-<div class="unauthorised">
+<div class="unauthorised"> <!-- Uses the same CSS formatting as the unauthorised page for conveniency and cutting replicate code -->
     <br> {{sessions}} <br> <br>
     {{tasks}}
 </div>
@@ -39,18 +39,18 @@
     </div>
 {% endif %}
 
-<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script> <!-- Link for where to fetch the Google Charts API -->
 
 <script>
-const js_array_a = {{ sessions | tojson | safe }};
-const js_array_b = {{ tasks | tojson | safe }};
+const js_array_a = {{ sessions | tojson }}; // Passing the python sessions and tasks lists into JS arrays
+const js_array_b = {{ tasks | tojson }};
 
 google.charts.load('current',{packages:['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+google.charts.setOnLoadCallback(drawChart); // Send through request to load graph
 
-window.addEventListener('resize', drawChart);
+window.addEventListener('resize', drawChart); // Listener to resize graphs for different page widths sizes
 
-function drawChart() {
+function drawChart() { // Manages the data and visuals for each chart
 
     const min_data = google.visualization.arrayToDataTable(js_array_a);
     const idv_data = google.visualization.arrayToDataTable(js_array_b);

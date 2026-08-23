@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<div class="actions-container">
+<div class="actions-container"> 
     <form action="{{ url_for('login') }}" method="get" style="display: inline;">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit">Login</button>
@@ -14,7 +14,7 @@
     <div class="overlay">
         <h3 style="color:olivedrab; font-size:2em;">Welcome!</h3>
         <p>Tutti is a online web app that lets students join classes, complete tasks and practice sessions, and lets teachers manage and track student progress.</p>
-        <div class="front-page-cols">
+        <div class="front-page-cols"> <!-- Container to help align the left and right columns -->
             <div class="left-col">
                 <p>If you're a <b>teacher</b> looking to create a space for your students to excel their learning...</p>
                 <form action="{{ url_for('create_class') }}" method="get" style="display: inline;">
@@ -31,7 +31,7 @@
             </div>
         </div>
     </div>
-    <div class="sml-actions-container">
+    <div class="sml-actions-container"> <!-- Alternate container for smaller screends -->
         <h3 style="color:olivedrab; font-size:2em;">Welcome!</h3>
         <p>Already have an account?</p>
         <form action="{{ url_for('login') }}" method="get" style="display: inline;">

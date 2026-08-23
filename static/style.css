@@ -43,7 +43,7 @@ main {
 .welcome {
     position: relative;
     width: 100%;
-    height: 650px;      /* fixed height so cropping can occur */
+    height: 700px;      /* fixed height so cropping can occur */
     overflow: hidden;   /* hides cropped parts */
 }
 
@@ -168,7 +168,7 @@ main {
 
 /* Tasks */
 
-.tasks {
+.left_student_view {
     width: 50%;
 }
 
@@ -191,6 +191,26 @@ main {
 
 .tasks tr:last-child td {
     border-bottom: none;
+}
+
+.time_data {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+    margin-top: 20px;
+}
+
+.time_data h3,
+.sml-time_data h3 {
+    color: olivedrab;
+}
+
+.sml-time_data {
+    display: none;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+    margin-top: 20px;
 }
 
 /* ---------------- BUTTONS ---------------- */
@@ -239,7 +259,9 @@ button,
     background: transparent;
     border: none;
     font-size: 1.5em;
+    color: black;
 }
+
 /* ---------------- LOGIN / REGISTER ---------------- */
 
 .reg-int {
@@ -435,7 +457,7 @@ button,
 
 #time-display {
     font-size: 3em;
-    font-family: 'Google Sans Code';
+    font-family: 'Google Sans Code'; /* I used this monospaced font for cleaner UI when the text changes */
     padding: 10px;
 }
 
@@ -682,8 +704,8 @@ hr {
     .calendar {
         width: 100%;
     }
-    .tasks {
-        width: 100%;
+    .left_student_view {
+        width: 95%;
     }
     .overlay {
         display: none;
@@ -698,6 +720,14 @@ hr {
     .student_completion {
         flex: unset;             /* allow natural height */
         width: 100%;             /* fill container width */
+    }
+
+    .sml-time_data {
+        display: block;
+    }
+
+    .time_data {
+        display: none;
     }
 }
 
@@ -732,27 +762,33 @@ hr {
     .tasks_table :is(th, td):nth-child(3),
     .tasks_table :is(th, td):nth-child(4),
     .tasks_table :is(th, td):nth-child(7),
-    .tasks_table :is(th, td):nth-child(8) {
+    .tasks_table :is(th, td):nth-child(8) { /* hide these columns on smallest screens */
         display: none;
+    }
+
+    .idv_tasks_table :is(th, td):nth-child(4), 
+    .idv_tasks_table :is(th, td):nth-child(5) { /* same with these columns, this helps with making sure everything is not squished */
+        display:none;
     }
 
     .tasks_table th,
     .tasks_table td {
         padding: 13px 5px;
     }
-    .graphs > div {
+    .graphs > div { /* make the graphs reach the full width of the screen instead of side by side */
         flex: 1 1 100%;
     }
     
     .student_main_view {
         margin: 20px;
         flex-direction: column;
+        padding-right: 10px;
     }
     .calendar {
         width: 100%;
     }
-    .tasks {
-        width: 100%;
+    .left_student_view {
+        width: 90%;
     }
     .corner-popup {
         width: 80%;
@@ -770,5 +806,13 @@ hr {
     .student_completion {
         flex: unset;             /* allow natural height */
         width: 100%;             /* fill container width */
+    }
+
+    .sml-time_data {
+        display: block;
+    }
+
+    .time_data {
+        display: none;
     }
 }

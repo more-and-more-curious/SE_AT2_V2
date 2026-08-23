@@ -7,7 +7,7 @@
 <div class="log-reg">
     <h1>Login</h1>
     
-    <div class="reg-int">
+    <div class="reg-int"> <!-- Manages the left and right column layout -->
         <div class="left-reg">
             <label for="username">Username:</label>
             <label for="password">Password:</label>
@@ -28,7 +28,7 @@
 </div>
 
 
-<div class="corner-popup" id="popup">
+<div class="corner-popup" id="popup"> <!-- Holds the popup messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         setTimeout(function() {
             popup.style.display = "none";
-        }, 3000);
+        }, 3000); // Makes the popup disappear after 3 seconds
     }
 });
 </script>

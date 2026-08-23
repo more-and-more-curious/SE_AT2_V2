@@ -20,7 +20,8 @@
                 <input name="username" type="text" required><br>
                 <input name="password" type="password" required
                         pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                        title="Must contain at least one number, one uppercase, and one lowercase letter. At least 8 characters"><br>
+                        title="Must contain at least one number, one uppercase, 
+                        and one lowercase letter. At least 8 characters"><br> <!-- Ensures that the user submits a strong password -->
                 <input name="password_con" type="password" required><br>
                 <input name="invite_code" type="text" required><br>
             </form>
@@ -32,7 +33,7 @@
     <p>Teacher looking to create a class? <a href="/create_class">Register Here</a>.</p>
 </div>
 
-<div class="corner-popup" id="popup">
+<div class="corner-popup" id="popup"> <!-- Popup messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         setTimeout(function() {
             popup.style.display = "none";
-        }, 3000);
+        }, 3000); // Disappear after 3 seconds
     }
 });
 </script>

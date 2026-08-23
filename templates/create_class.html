@@ -8,7 +8,7 @@
     <h1>Create a Class</h1>
     <p>Are you a teacher looking to create a virtual classroom for your students? <br> <br> <b>Create a class here!</b></p>
 
-    <div class="reg-int">
+    <div class="reg-int"> <!-- Container so that the left and right columns can be aligned properly -->
         <div class="left-reg">
             <label for="username">Username:</label>
             <label for="password">Password:</label>
@@ -33,7 +33,7 @@
 </div>
 
 
-<div class="corner-popup" id="popup">
+<div class="corner-popup" id="popup"> <!-- Popup that will display the flash messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         setTimeout(function() {
             popup.style.display = "none";
-        }, 3000);
+        }, 3000); // Makes the popup disappear after 3 seconds
     }
 });
 </script>

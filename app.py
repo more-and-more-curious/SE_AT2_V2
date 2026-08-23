@@ -233,6 +233,7 @@ init_db()
 def make_session_permanent(): # Tells flask that it should enforce the session lifetime of each user
     session.permanent = True
 
+#-------- ERROR HANDLING ROUTES --------
 # Below are a couple routes made to handle unauthorised requests, or handle errors
 
 @app.route('/unauthorised')
@@ -258,6 +259,8 @@ def internal_error(error):
 @app.route('/')
 def index():
     return render_template("index.html")
+
+#-------- LOGIN AND REGISTER ROUTES --------
 
 @app.route("/login", methods=["GET", "POST"])
 @limiter.limit("5 per minute") # Limits the amount of requests each user can make to the login route specifically to 5 per minute
@@ -424,6 +427,8 @@ def create_class():
 
         return render_template("create_class.html")
 
+#---------- STUDENT SIDE ROUTES --------
+
 @app.route("/student_main", methods=["GET", "POST"])
 @app.route("/student_main/<int:year>/<int:month_num>/", methods=["GET", "POST"])
 @check_permissions("user") # Decorator ensures only student's access the the student page
@@ -500,6 +505,21 @@ def student_main(year=None, month_num=None):
                     pasttasks.append(int(task_date.strftime("%d")))
                 else:
                     futtasks.append(int(task_date.strftime("%d")))
+
+    cursor.execute("SELECT time, date FROM sessions WHERE user_id = ?", (user_id,)) 
+    times_raw = cursor.fetchall()
+    total_time = 0
+    month_time = 0
+    today_time = 0
+    for time in times_raw:
+        total_time += time[0] # Add all the session times together 
+        y, m, d = map(int, time[1].split("-"))
+        if m == month_num:
+            month_time += time[0]
+            task_date = date(y, m, d)
+            if task_date == dt:
+                today_time += time[0]
+
     conn.commit()
     conn.close()
 
@@ -515,7 +535,37 @@ def student_main(year=None, month_num=None):
                            next_month=next_month,
                            tasks=tasks,
                            pasttasks=pasttasks,
-                           futtasks=futtasks) # Send EVERYTHING to the HTML
+                           futtasks=futtasks,
+                           total_time=total_time,
+                           month_time=month_time,
+                           today_time=today_time) # Send EVERYTHING to the HTML
+
+
+@app.route('/end_session', methods=["POST"])
+@check_permissions("user")
+def end_session():
+    time = float(request.form.get('time'))
+    dt = date.today()
+    task_id = request.form.get("task_id")
+
+    conn = sqlite3.connect('tutti.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE username = ?", (session['username'],))
+    row = cursor.fetchone()
+    user_id = row[0]
+    if not task_id: # A little catch incase the client side sends us no ID
+        task_id = None 
+    else:
+        task_id = int(task_id)
+        cursor.execute('UPDATE user_tasks SET completed = 1 WHERE task_id = ? AND user_id = ?', 
+                        (task_id, user_id)) # Set the task to be completed in it's instance in user_tasks
+        cursor.execute("INSERT INTO sessions (time, date, user_id) VALUES (?, ?, ?)", (time, dt, user_id)) 
+        # Add the session data to the session table for future use
+    conn.commit()
+    conn.close()
+    return redirect('/student_main')
+
+#-------- TEACHER SIDE ROUTES --------
 
 @app.route('/teacher_main', methods=["GET", "POST"])
 @check_permissions("admin") # Ensure only admins can access this page (IMPORTANT! as this is where you manage users and tasks)
@@ -712,29 +762,7 @@ def teacher_stats():
 
     return render_template('teacher_stats.html', sessions=sessions, tasks=tasks)
 
-@app.route('/end_session', methods=["POST"])
-@check_permissions("user")
-def end_session():
-    time = float(request.form.get('time'))
-    dt = date.today()
-    task_id = request.form.get("task_id")
-
-    conn = sqlite3.connect('tutti.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT id FROM users WHERE username = ?", (session['username'],))
-    row = cursor.fetchone()
-    user_id = row[0]
-    if not task_id: # A little catch incase the client side sends us no ID
-        task_id = None 
-    else:
-        task_id = int(task_id)
-        cursor.execute('UPDATE user_tasks SET completed = 1 WHERE task_id = ? AND user_id = ?', 
-                        (task_id, user_id)) # Set the task to be completed in it's instance in user_tasks
-        cursor.execute("INSERT INTO sessions (time, date, user_id) VALUES (?, ?, ?)", (time, dt, user_id)) 
-        # Add the session data to the session table for future use
-    conn.commit()
-    conn.close()
-    return redirect('/student_main')
+#-------- MANAGE TASK ROUTES --------
 
 @app.route('/mark_complete', methods=["POST"]) # Pretty similar to the end_session route, with a few changes (the user hasn't actually competed the task, so there's no data on it!)
 @check_permissions("admin")
@@ -832,6 +860,32 @@ def delete_idv():
     session['student_id'] = student_id
     return redirect("/teacher_student")
 
+#------- MANAGE USER ROUTES -------
+
+
+@app.route("/create_invite", methods=["POST"])
+@check_permissions("admin")
+def create_invite():
+    conn = sqlite3.connect("tutti.db")
+    cursor = conn.cursor()
+
+    user_id = session["user_id"]
+    cursor.execute("SELECT class_id FROM users WHERE id = ?", (user_id,))
+    class_id = cursor.fetchone()[0]
+
+    raw_code = secrets.token_urlsafe(8) # Create the class code
+    code_hash = generate_password_hash(raw_code) # Store it hashed in the database for extra security
+
+    expires_at = (datetime.utcnow() + timedelta(days=7)).isoformat() # Make an expiry date (ensures that if the student doesn't use it, it's unlikely that someone who may stumble upon it can use it)
+
+    cursor.execute("""INSERT INTO invite_codes (code_hash, class_id, uses_remaining, expires_at, created_by) VALUES (?, ?, ?, ?, ?)""", 
+                   (code_hash, class_id, 1, expires_at, user_id)) # A record of the code 
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'code': raw_code}) # Send it back to the client side for JS to deal with
+
 @app.route("/edit_student", methods=["POST"]) # Quite similar to the main page, but we need to send through the edit index as well (as well as a few other differences)
 @check_permissions("admin")
 def edit_student():
@@ -890,29 +944,6 @@ def delete_student():
     conn.commit()
     conn.close()
     return redirect("/teacher_main")
-
-@app.route("/create_invite", methods=["POST"])
-@check_permissions("admin")
-def create_invite():
-    conn = sqlite3.connect("tutti.db")
-    cursor = conn.cursor()
-
-    user_id = session["user_id"]
-    cursor.execute("SELECT class_id FROM users WHERE id = ?", (user_id,))
-    class_id = cursor.fetchone()[0]
-
-    raw_code = secrets.token_urlsafe(8) # Create the class code
-    code_hash = generate_password_hash(raw_code) # Store it hashed in the database for extra security
-
-    expires_at = (datetime.utcnow() + timedelta(days=7)).isoformat() # Make an expiry date (ensures that if the student doesn't use it, it's unlikely that someone who may stumble upon it can use it)
-
-    cursor.execute("""INSERT INTO invite_codes (code_hash, class_id, uses_remaining, expires_at, created_by) VALUES (?, ?, ?, ?, ?)""", 
-                   (code_hash, class_id, 1, expires_at, user_id)) # A record of the code 
-
-    conn.commit()
-    conn.close()
-
-    return jsonify({'code': raw_code}) # Send it back to the client side for JS to deal with
 
 @app.route("/make_admin", methods=["POST"])
 @check_permissions("admin")

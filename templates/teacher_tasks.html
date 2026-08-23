@@ -45,7 +45,7 @@
         </thead>
 
         <tbody>
-        {% if tasks is string %}
+        {% if tasks is string %} <!-- Server side will send through a string if there are no tasks, so HTML checks for that here -->
             <tr>
                 <td colspan="8" id="task-txt">
                     {{ tasks }}
@@ -55,7 +55,7 @@
         {% else %}
             {% for task in tasks %}
 
-            {% if task[0] == edit_index %}
+            {% if task[0] == edit_index %} <!-- Manages the editing of tasks on the same page -->
             <tr>
                 <td>{{ task[0] }}</td>
 
@@ -119,7 +119,7 @@
         </tbody>
     </table>
 
-    <div id="create-popup" class="popup-parent">
+    <div id="create-popup" class="popup-parent"> <!-- Create task popup, JS handles the showing and hiding of this -->
         <form class="task-contents" method="POST" action="{{ url_for('create_task') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <span class="close" onclick="closePopup()">&times;</span>
@@ -137,7 +137,7 @@
         </form>
     </div>
 
-    <script>
+    <script> // Shows and hides the popup by signalling from the buttons
     function openPopup() {
         document.getElementById("create-popup").style.display = "block";
     }

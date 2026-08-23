@@ -22,36 +22,50 @@
 </div>
 
 <div class="student_main_view">
-    <div class="tasks">
-        <h1>Welcome Back {{username}}</h1>
-        <table class="tasks-table">
-            <tr>
-                <th id="task_name">Your Tasks</th>
-                <th id="due_date">Due</th>
-                <th id="button"></th>
-            </tr>
-            <tbody>
-                {% if tasks is string %}
-                    <tr>
-                        <td colspan="8" id="task-txt">
-                            {{ tasks }}
-                        </td>
-                    </tr>
+    <div class="left_student_view">
+        <div class="tasks">
+            <h1>Welcome Back {{username}}</h1>
+            <table class="tasks-table">
+                <tr>
+                    <th id="task_name">Your Tasks</th>
+                    <th id="due_date">Due</th>
+                    <th id="button"></th>
+                </tr>
+                <tbody>
+                    {% if tasks is string %}
+                        <tr>
+                            <td colspan="8" id="task-txt">
+                                {{ tasks }}
+                            </td>
+                        </tr>
 
-                {% else %}
-                    {% for row in tasks %}
-                    <tr>
-                        <td>
-                            <h4>{{ row[1] }}</h4>
-                            <p>{{ row[2] }}</p>
-                        </td>
-                        <td>{{ row[3] }}</td>
-                        <td><button class="open-popup" onclick="openPopup({{ row[0] }})">+</button></td>
-                    {% endfor %}
-                {% endif %}
-            </tbody>
-        </table>
+                    {% else %}
+                        {% for row in tasks %}
+                        <tr>
+                            <td>
+                                <h4>{{ row[1] }}</h4>
+                                <p>{{ row[2] }}</p>
+                            </td>
+                            <td>{{ row[3] }}</td>
+                            <td><button class="open-popup" onclick="openPopup({{ row[0] }})">+</button></td>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="time_data">
+            <h3>Your sessions:</h3>
+            <p><b>Total session time: </b>{{ total_time }} min | <b>This month: </b>{{ month_time }} min | <b>Today: </b>{{ today_time }} min</p>
+        </div>
+        <div class="sml-time_data">
+            <h3>Your sessions:</h3>
+            <p><b>Total session time: </b>{{ total_time }}</p>
+            <p><b>This month: </b>{{ month_time }}</p>
+            <p><b>Today: </b>{{ today_time }}</p>
+        </div>
     </div>
+
     <div class="calendar">
         <div class="calendar-nav">
             <h3><a href="{{ url_for('student_main', year=prev_year, month_num=prev_month) }}">&#9204;    </a>{{ month }} {{ year }}<a href="{{ url_for('student_main', year=next_year, month_num=next_month) }}">    &#9205;</a></h3>
